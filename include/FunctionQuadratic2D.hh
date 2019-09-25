@@ -26,8 +26,8 @@ namespace AOPT {
             //Todo: implement the function f(x,y) = 0.5(x^2 + gamma *y^2)
             //------------------------------------------------------//
 			double f;
-			double x1 = *&_x[0];
-			double x2 = *&_x[1];
+			double x1 = _x[0];
+			double x2 = _x[1];
 			f = 0.5 * (x1 * x1 + gamma_ * x2 * x2);
 			return f;
             //------------------------------------------------------//

@@ -22,41 +22,31 @@ namespace AOPT {
     public:
         int grid_search_2d(const Vec& _x_l, const Vec& _x_u, const int _func = 0) {
             std::cout<<"Grid searching the minimum of a 2d function..."<<std::endl;
-
             FunctionNonConvex2D fnc2d;
             FunctionQuadratic2D fq2d(-1.);
 			double a1 = std::numeric_limits<double>::infinity();
 
-			double xl = *&_x_l[0];
-			double xu = *&_x_u[0];
+			double xl = _x_l[0];
+			double xu = _x_u[0];
 			double nu = n_grid_;
 			double step_size = (xu - xl)/ nu;
-
-
-			if (_func == 0) {
-				for (int i = xl; i <= xu; i = i+step_size)
-					for (int j = xl; j <= xu; j = j+step_size) {
-						Vec x(2);
-						x << i, j;
-						double b;
+			
+			for (double i = xl; i <= xu; i = i+step_size) {
+				for (double j = xl; j <= xu; j = j+step_size) {
+					Vec x(2);
+					x << i, j;
+					double b;
+					if (_func == 0) {
 						b = fnc2d.f(x);
-						if (b < a1) {
-							a1 = b;
-						}
-					}
-			}
-			else {
-				for (int i = xl; i <= xu; i = i + step_size)
-					for (int j = xl; j <= xu; j = j + step_size) {
-						Vec x(2);
-						x << i, j;
-						double b;
+					} else {
 						b = fq2d.f(x);
-						if (b < a1) {
-							a1 = b;
-						}
 					}
+					if (b < a1) {
+						a1 = b;
+					}
+				}
 			}
+			
 			std::cout << "minimum:" << a1 << std::endl;
 			return a1;
         }
@@ -77,8 +67,8 @@ namespace AOPT {
 
             //------------------------------------------------------//
 
-			double xl = *&_x_l[0];
-			double xu = *&_x_u[0];
+			double xl = _x_l[0];
+			double xu = _x_u[0];
 			double nu = n_grid_;
 			double step_size = (xu - xl) / nu;
 			
@@ -89,7 +79,7 @@ namespace AOPT {
 			Vec x;
 			x = {};
 			min_function(_n, xu, xl, step_size, x, fqnd, a);
-			std::cout << "minimum:" << *&a << std::endl;
+			std::cout << "minimum:" << a << std::endl;
 			return a;
         }
 
@@ -99,21 +89,21 @@ namespace AOPT {
 		void min_function(int d, double xu, double xl, double step_size, Vec x, FunctionQuadraticND fqnd, double& a) {
 
 			if (d > 2){
-				for (int i = xl; i <= xu; i = i + step_size) {
+				for (double i = xl; i <= xu; i = i + step_size) {
 					Vec y(x.size() + 1);
 					y << x, i;
 					min_function(d - 1, xu, xl, step_size, y, fqnd, a);
 				}
 			}
 			else{
-				for (int i = xl; i <= xu; i = i + step_size) 
-					for (int j = xl; j <= xu; j = j + step_size) {
+				for (double i = xl; i <= xu; i = i + step_size) 
+					for (double j = xl; j <= xu; j = j + step_size) {
 						Vec y(x.size() + 2);
 						y << x, i, j;
 						double b = fqnd.f(y);
-						if (b < *&a) {
+						if (b < a) {
 							//std::cout << "b:" << b << std::endl;
-							*&a = b;
+							a = b;
 						}
 					}
 				}

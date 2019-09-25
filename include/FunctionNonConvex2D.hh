@@ -25,8 +25,8 @@ namespace AOPT {
             //Todo: implement the function f(x,y) = (y-x^2)^2+cos^2(4*y)*(1-x)^2+x^2+y^y
             //------------------------------------------------------//
 			double f;
-			double x1 = *&_x[0];
-			double x2 = *&_x[1];
+			double x1 = _x[0];
+			double x2 = _x[1];
 			f = pow(x2 - pow(x1, 2), 2) + pow(cos(4*x2), 2)*pow(1 - x1, 2) + pow(x1, 2) + pow(x2, 2);
 			return f;
             //------------------------------------------------------//
