@@ -15,6 +15,9 @@ int main(int _argc, const char* _argv[]) {
     x_l = atof(_argv[2]);
     x_u = atof(_argv[3]);
     n_grid = atoi(_argv[4]);
+	if (_argc > 5) {
+		n = atoi(_argv[5]);
+	}
 
     //do grid search
     AOPT::GridSearch gs(n_grid);
@@ -44,7 +47,7 @@ int main(int _argc, const char* _argv[]) {
         sw.start();
 
         //read the input parameters
-        n = atoi(_argv[5]);
+        //n = atoi(_argv[5]);
 
         Eigen::VectorXd vec_xl(n), vec_xu(n);
         for (int i = 0; i < n; ++i) {

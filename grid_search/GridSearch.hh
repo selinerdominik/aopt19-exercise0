@@ -15,6 +15,7 @@ namespace AOPT {
         using Vec = FunctionBase::Vec;
         using Mat = FunctionBase::Mat;
 
+
         GridSearch(const int _n_grid = 10) : n_grid_(_n_grid){}
         ~GridSearch() {}
 
@@ -24,14 +25,40 @@ namespace AOPT {
 
             FunctionNonConvex2D fnc2d;
             FunctionQuadratic2D fq2d(-1.);
+			double a1 = std::numeric_limits<double>::infinity();
 
-            //------------------------------------------------------//
-            //Todo: implement the 2d version of the grid search
-            //algorithm to find minimum value of function 0 and function 1
-            //------------------------------------------------------//
+			double xl = *&_x_l[0];
+			double xu = *&_x_u[0];
+			double nu = n_grid_;
+			double step_size = (xu - xl)/ nu;
 
-            //------------------------------------------------------//
-            return 0;
+
+			if (_func == 0) {
+				for (int i = xl; i <= xu; i = i+step_size)
+					for (int j = xl; j <= xu; j = j+step_size) {
+						Vec x(2);
+						x << i, j;
+						double b;
+						b = fnc2d.f(x);
+						if (b < a1) {
+							a1 = b;
+						}
+					}
+			}
+			else {
+				for (int i = xl; i <= xu; i = i + step_size)
+					for (int j = xl; j <= xu; j = j + step_size) {
+						Vec x(2);
+						x << i, j;
+						double b;
+						b = fq2d.f(x);
+						if (b < a1) {
+							a1 = b;
+						}
+					}
+			}
+			std::cout << "minimum:" << a1 << std::endl;
+			return a1;
         }
 
 
@@ -49,17 +76,50 @@ namespace AOPT {
             //------------------------------------------------------//
 
             //------------------------------------------------------//
-            return 0;
+
+			double xl = *&_x_l[0];
+			double xu = *&_x_u[0];
+			double nu = n_grid_;
+			double step_size = (xu - xl) / nu;
+			
+			FunctionQuadraticND fqnd(_n);
+			//FunctionNonConvex2D fqnd;
+			double a = std::numeric_limits<double>::infinity();
+
+			Vec x;
+			x = {};
+			min_function(_n, xu, xl, step_size, x, fqnd, a);
+			std::cout << "minimum:" << *&a << std::endl;
+			return a;
         }
 
     private:
         int n_grid_;
+
+		void min_function(int d, double xu, double xl, double step_size, Vec x, FunctionQuadraticND fqnd, double& a) {
+
+			if (d > 2){
+				for (int i = xl; i <= xu; i = i + step_size) {
+					Vec y(x.size() + 1);
+					y << x, i;
+					min_function(d - 1, xu, xl, step_size, y, fqnd, a);
+				}
+			}
+			else{
+				for (int i = xl; i <= xu; i = i + step_size) 
+					for (int j = xl; j <= xu; j = j + step_size) {
+						Vec y(x.size() + 2);
+						y << x, i, j;
+						double b = fqnd.f(y);
+						if (b < *&a) {
+							//std::cout << "b:" << b << std::endl;
+							*&a = b;
+						}
+					}
+				}
+			return;
+		}
     };
 
     //=============================================================================
 }
-
-
-
-
-
